@@ -1,5 +1,5 @@
 #from simple_pid import PID
-from picamera import PiCamera
+from picamera2 import PiCamera2
 from flask import Flask, Response, request
 #from gpiozero import Robot, Motor, DigitalInputDevice
 import io
@@ -21,10 +21,13 @@ enc_b = 16
 mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
 
 # Initialize the PiCamera
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 24
-app.camera.start_preview()
+picam2 = PiCamera2()
+camera_config = picam2.create_preview_configuration()
+picam2.configure(camera_config)
+picam2.resolution = (640, 480)
+picam2.framerate = 24
+picam2.start_preview(Preview.QTGL)
+picam2.start()
 time.sleep(2)
 
 def capture_image():
