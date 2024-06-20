@@ -21,7 +21,7 @@ enc_b = 16
 # mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
 
 # Initialize the PiCamera
-picam2 = PiCamera2()
+picam2 = Picamera2()
 camera_config = picam2.create_preview_configuration()
 picam2.configure(camera_config)
 picam2.resolution = (640, 480)
