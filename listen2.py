@@ -1,7 +1,7 @@
-from simple_pid import PID
+#from simple_pid import PID
 from picamera import PiCamera
 from flask import Flask, Response, request
-from gpiozero import Robot, Motor, DigitalInputDevice
+#from gpiozero import Robot, Motor, DigitalInputDevice
 import io
 import time
 import threading
