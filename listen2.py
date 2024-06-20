@@ -37,7 +37,7 @@ app = Flask(__name__)
 
 def capture_image():
     stream = io.BytesIO()
-    camera.capture(stream, 'jpeg')
+    picam2.capture(stream, 'jpeg')
     stream.seek(0)
     return stream.read()
 
