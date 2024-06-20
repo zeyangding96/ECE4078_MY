@@ -21,13 +21,16 @@ enc_b = 16
 # mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
 
 # Initialize the PiCamera
+print('a')
 picam2 = Picamera2()
+print('b')
 camera_config = picam2.create_preview_configuration()
 picam2.configure(camera_config)
 picam2.resolution = (640, 480)
 picam2.framerate = 24
-picam2.start_preview(Preview.QTGL)
+picam2.start_preview(Preview.DRM)
 picam2.start()
+print('c')
 time.sleep(2)
 
 def capture_image():
