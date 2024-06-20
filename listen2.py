@@ -24,14 +24,16 @@ enc_b = 16
 print('a')
 picam2 = Picamera2()
 print('b')
-camera_config = picam2.create_preview_configuration()
-picam2.configure(camera_config)
+#camera_config = picam2.create_preview_configuration()
+#picam2.configure(camera_config)
 picam2.resolution = (640, 480)
 picam2.framerate = 24
-picam2.start_preview(Preview.DRM)
+picam2.start_preview()
 picam2.start()
 print('c')
 time.sleep(2)
+
+app = Flask(__name__)
 
 def capture_image():
     stream = io.BytesIO()
