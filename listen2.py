@@ -18,7 +18,7 @@ enc_a = 26
 enc_b = 16
 
 # Robot object
-mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
+# mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
 
 # Initialize the PiCamera
 picam2 = PiCamera2()
