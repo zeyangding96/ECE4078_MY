@@ -45,7 +45,7 @@ def send_image():
     
 @app.route('/move')
 def move():
-    l_val, r_val = request.query.value.split(',')
+    l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     mbot.value = (l_val, r_val)
     
 
