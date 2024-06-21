@@ -48,7 +48,7 @@ def move():
     l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     l_val, r_val = float(l_val), float(r_val)
     mbot.value = (l_val, r_val)
-    
+    return None
 
 
 # Run Flask in a separate thread
