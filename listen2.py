@@ -22,26 +22,23 @@ mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forw
 
 # Initialize the PiCamera
 picam2 = Picamera2()
-# config = picam2.create_video_configuration()
-# picam2.configure(config)
-picam2.resolution = (640, 480)
-picam2.framerate = 24
-picam2.start_preview()
+config = picam2.create_preview_configuration(main={"size": (640,480})
+picam2.configure(config)
+# picam2.resolution = (640, 480)
+# picam2.framerate = 24
+# picam2.start_preview()
 picam2.start()
 time.sleep(2)
 
 # Initialize flask
 app = Flask(__name__)
 
+@app.route('/image')
 def capture_image():
     stream = io.BytesIO()
-    picam2.capture_file(stream, format='jpeg', use_video_port=True)
+    picam2.capture_file(stream, format='jpeg')
     stream.seek(0)
-    return stream.read()
-
-@app.route('/image')
-def send_image():
-    return Response(capture_image(), mimetype='image/jpeg')
+    return Response(stream, mimetype='image/jpeg')
     
 @app.route('/move')
 def move():
