@@ -22,8 +22,8 @@ mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forw
 
 # Initialize the PiCamera
 picam2 = Picamera2()
-config = picam2.create_video_configuration()
-picam2.configure(config)
+# config = picam2.create_video_configuration()
+# picam2.configure(config)
 picam2.resolution = (640, 480)
 picam2.framerate = 24
 picam2.start_preview()
@@ -35,7 +35,7 @@ app = Flask(__name__)
 
 def capture_image():
     stream = io.BytesIO()
-    picam2.capture_file(stream, format='jpeg')
+    picam2.capture_file(stream, format='jpeg', use_video_port=True)
     stream.seek(0)
     return stream.read()
 
