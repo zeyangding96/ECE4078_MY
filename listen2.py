@@ -1,7 +1,7 @@
 #from simple_pid import PID
 from picamera2 import Picamera2, Preview
 from flask import Flask, Response, request
-#from gpiozero import Robot, Motor, DigitalInputDevice
+from gpiozero import Robot, Motor, DigitalInputDevice
 import io
 import time
 import threading
@@ -18,21 +18,19 @@ enc_a = 26
 enc_b = 16
 
 # Robot object
-# mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
+mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
 
 # Initialize the PiCamera
-print('a')
 picam2 = Picamera2()
-print('b')
-#camera_config = picam2.create_preview_configuration()
-#picam2.configure(camera_config)
+# config = picam2.create_video_configuration()
+# picam2.configure(config)
 picam2.resolution = (640, 480)
 picam2.framerate = 24
 picam2.start_preview()
 picam2.start()
-print('c')
 time.sleep(2)
 
+# Initialize flask
 app = Flask(__name__)
 
 def capture_image():
@@ -42,8 +40,13 @@ def capture_image():
     return stream.read()
 
 @app.route('/image')
-def serve_image():
+def send_image():
     return Response(capture_image(), mimetype='image/jpeg')
+    
+@app.route('/move')
+def move():
+    l_val, r_val = request.query.value.split(',')
+    mbot.value = (l_val, r_val)
     
 
 
@@ -60,5 +63,5 @@ try:
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
-    robot.stop()
+    mbot.stop()
     print("Program interrupted by user.")
