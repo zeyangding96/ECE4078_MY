@@ -22,8 +22,8 @@ mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forw
 
 # Initialize the PiCamera
 picam2 = Picamera2()
-# config = picam2.create_video_configuration()
-# picam2.configure(config)
+config = picam2.create_video_configuration()
+picam2.configure(config)
 picam2.resolution = (640, 480)
 picam2.framerate = 24
 picam2.start_preview()
@@ -48,7 +48,7 @@ def move():
     l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     l_val, r_val = float(l_val), float(r_val)
     mbot.value = (l_val, r_val)
-    return None
+    return
 
 
 # Run Flask in a separate thread
