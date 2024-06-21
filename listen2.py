@@ -49,7 +49,7 @@ def serve_image():
 
 # Run Flask in a separate thread
 def run_flask():
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)
 
 flask_thread = threading.Thread(target=run_flask)
 flask_thread.daemon = True
