@@ -70,8 +70,8 @@ def move():
     # if backward
     elif (l_val < 0 and r_val < 0):
         move_robot(forward=False)  
-   
-   return ""
+    
+    return ""
     
 def left_tick():
     global left_count
