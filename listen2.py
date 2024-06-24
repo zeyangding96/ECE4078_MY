@@ -35,8 +35,8 @@ left_encoder.when_activated = left_tick
 right_encoder.when_activated = right_tick
 left_count = 0
 right_count = 0
-pid_left = PID(0.0005, 0, 0.0001, setpoint=0)
-pid_right = PID(0.0005, 0, 0.0001, setpoint=0)
+# pid_left = PID(0.0005, 0, 0.0001, setpoint=0)
+pid_right = PID(0.0005, 0, 0.0001, setpoint=0, output_limits=(0,1))
 flag_pid = 0
 flag_forward = 1
 
@@ -95,8 +95,8 @@ def move_robot():
     
     global left_count, right_count, flag_pid, flag_forward
     
-    pid_left.setpoint = 9999
-    pid_right.setpoint = 9999
+    # pid_left.setpoint = 9999
+    # pid_right.setpoint = 9999
     
     while True:
     
@@ -107,13 +107,14 @@ def move_robot():
             
         else:
         
-            l_val = pid_left(left_count)
+            # l_val = pid_left(left_count)
+            pid_right.setpoint = left_count
             r_val = pid_right(right_count)
             print(left_count, right_count)
             print(l_val, r_val)
             
-            l_val = max(min(l_val, 1), -1)
-            r_val = max(min(r_val, 1), -1)
+            # l_val = max(min(l_val, 1), -1)
+            # r_val = max(min(r_val, 1), -1)
             
         
             if flag_forward:
