@@ -75,7 +75,7 @@ def move():
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
         flag_pid = False
-        time.sleep(0.01)
+        # time.sleep(0.01)
         mbot.value = (l_val, r_val)
         
     
@@ -111,8 +111,8 @@ def move_robot():
             l_val = 0.9
             pid_right.setpoint = left_count
             r_val = pid_right(right_count)
-            print(left_count, right_count)
-            print(l_val, r_val)
+            # print(left_count, right_count)
+            # print(l_val, r_val)
             
             # l_val = max(min(l_val, 1), -1)
             # r_val = max(min(r_val, 1), -1)
@@ -123,7 +123,7 @@ def move_robot():
             else:
                 mbot.value = (-l_val, -r_val)
         
-        time.sleep(0.01)
+        time.sleep(0.005)
 
 
 # Run Flask in a separate thread
