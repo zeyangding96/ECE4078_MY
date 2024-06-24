@@ -23,6 +23,14 @@ mbot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forw
 # Initialize PID controllers for wheels
 left_encoder = DigitalInputDevice(enc_a)
 right_encoder = DigitalInputDevice(enc_b)
+def left_tick():
+    global left_count
+    left_count += 1
+    
+def right_tick():
+    global right_count
+    right_count += 1
+
 left_encoder.when_activated = left_tick
 right_encoder.when_activated = right_tick
 left_count = 0
@@ -72,14 +80,6 @@ def move():
         move_robot(forward=False)  
     
     return ""
-    
-def left_tick():
-    global left_count
-    left_count += 1
-    
-def right_tick():
-    global right_count
-    right_count += 1
     
 def move_robot(forward=True):
     global stop_event
