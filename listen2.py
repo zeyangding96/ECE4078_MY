@@ -109,10 +109,12 @@ def move_robot():
         
             l_val = pid_left(left_count)
             r_val = pid_right(right_count)
+            print(left_count, right_count)
+            print(l_val, r_val)
             
             l_val = max(min(l_val, 1), -1)
             r_val = max(min(r_val, 1), -1)
-            print(left_count, right_count)
+            
         
             if flag_forward:
                 mbot.value = (l_val, r_val)
