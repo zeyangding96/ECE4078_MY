@@ -69,6 +69,7 @@ def move():
     
     l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     l_val, r_val = float(l_val), float(r_val)
+    print(l_val, r_val)
     
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
@@ -108,7 +109,7 @@ def move_robot(forward=True):
         
         l_val = max(min(l_val, 1), -1)
         r_val = max(min(r_val, 1), -1)
-        print(l_val, r_val)
+        # print(l_val, r_val)
         
         if forward:
             mbot.value = (l_val, r_val)
