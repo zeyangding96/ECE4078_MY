@@ -109,7 +109,7 @@ def move():
         
         # l_val = max(min(l_val, 1), -1)
         # r_val = max(min(r_val, 1), -1)
-        print(l_val, r_val)
+        # print(l_val, r_val)
         
         # if forward:
             # mbot.value = (l_val, r_val)
