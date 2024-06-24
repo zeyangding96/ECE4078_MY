@@ -37,6 +37,7 @@ left_count = 0
 right_count = 0
 pid_left = PID(1, 0.1, 0.05, setpoint=0)
 pid_right = PID(1, 0.1, 0.05, setpoint=0)
+flag_pid = 1
 
 # Initialize the PiCamera
 picam2 = Picamera2()
@@ -64,35 +65,42 @@ def capture_image():
     
 @app.route('/move')
 def move():
+    global flag_pid
+    
     l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     l_val, r_val = float(l_val), float(r_val)
     
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
+        flag_pid = False
+        time.sleep(0.1)
         mbot.value = (l_val, r_val)
+        
     
     # if forward
-    elif (l_val > 0 and r_val > 0):
+    elif (l_val > 0 and r_val > 0) and not flag_pid:
+        flag_pid = True
         move_robot(forward=True)
     
     # if backward
-    elif (l_val < 0 and r_val < 0):
+    elif (l_val < 0 and r_val < 0) and not flag_pid:
+        flag_pid = True
         move_robot(forward=False)  
     
     return ""
     
 def move_robot(forward=True):
-    global stop_event
-    stop_event.clear()
+    # global stop_event
+    # stop_event.clear()
     
-    global left_count, right_count
+    global left_count, right_count, flag_pid
     left_count = 0
     right_count = 0
     
     pid_left.setpoint = 9999
     pid_right.setpoint = 9999
     
-    while not stop_event.is_set():
+    while flag_pid:
         l_val = pid_left(left_count)
         r_val = pid_right(right_count)
         
