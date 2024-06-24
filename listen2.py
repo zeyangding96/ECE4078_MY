@@ -108,6 +108,7 @@ def move_robot():
         else:
         
             # l_val = pid_left(left_count)
+            l_val = 0.9
             pid_right.setpoint = left_count
             r_val = pid_right(right_count)
             print(left_count, right_count)
