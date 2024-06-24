@@ -75,7 +75,6 @@ def move():
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
         flag_pid = False
-        time.sleep(0.01)
         mbot.value = (l_val, r_val)
         
     
@@ -90,6 +89,23 @@ def move():
         flag_pid = True
     
     return ""
+    
+class PID:
+    def __init__(self, Kp, Ki, Kd, setpoint=0):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+        self.setpoint = setpoint
+        self.last_error = 0
+        self.integral = 0
+
+    def compute(self, measurement):
+        error = self.setpoint - measurement
+        self.integral += error
+        derivative = error - self.last_error
+        self.last_error = error
+        output = self.Kp * error + self.Ki * self.integral + self.Kd * derivative
+        return output
     
 def move_robot():
     
