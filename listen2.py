@@ -36,7 +36,7 @@ right_encoder.when_activated = right_tick
 left_count = 0
 right_count = 0
 # pid_left = PID(0.0005, 0, 0.0001, setpoint=0)
-pid_right = PID(0.0005, 0.0001, 0.0001, setpoint=0, output_limits=(0,1), starting_output=0.9)
+pid_right = PID(0.001, 0, 0.0005, setpoint=0, output_limits=(0,1), starting_output=0.9)
 flag_pid = 0
 flag_forward = 1
 
