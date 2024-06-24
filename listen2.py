@@ -134,5 +134,5 @@ try:
 except KeyboardInterrupt:
     stop_event.set()
     mbot.stop()
-    picame2.stop()
+    picam2.stop()
     print("Program interrupted by user.")
