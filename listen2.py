@@ -75,7 +75,7 @@ def move():
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
         flag_pid = False
-        time.sleep(0.1)
+        time.sleep(0.01)
         mbot.value = (l_val, r_val)
         
     
