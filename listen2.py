@@ -71,7 +71,7 @@ def move():
     # l_val, r_val = float(l_val), float(r_val)
     # print(l_val, r_val)
     
-    if stop or turn
+    # if stop or turn
     # if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
         # print('stop')
         # flag_pid = False
@@ -79,13 +79,13 @@ def move():
         # mbot.value = (l_val, r_val)
         
     
-    if forward
+    # if forward
     # elif (l_val > 0 and r_val > 0) and not flag_pid:
         # print('forward')
         # flag_pid = True
         # move_robot(forward=True)
     
-    if backward
+    # if backward
     # elif (l_val < 0 and r_val < 0) and not flag_pid:
         # flag_pid = True
         # move_robot(forward=False)  
@@ -93,8 +93,8 @@ def move():
     # return ""
     
 # def move_robot(forward=True):
-    global stop_event
-    stop_event.clear()
+    # global stop_event
+    # stop_event.clear()
     
     # global left_count, right_count, flag_pid
     # left_count = 0
