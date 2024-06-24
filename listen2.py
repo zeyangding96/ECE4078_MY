@@ -72,6 +72,7 @@ def move():
     
     # if stop or turn
     if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
+        print('stop')
         flag_pid = False
         time.sleep(0.1)
         mbot.value = (l_val, r_val)
@@ -79,6 +80,7 @@ def move():
     
     # if forward
     elif (l_val > 0 and r_val > 0) and not flag_pid:
+        print('forward')
         flag_pid = True
         move_robot(forward=True)
     
