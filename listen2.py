@@ -70,20 +70,20 @@ def move():
     
     # l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     # l_val, r_val = float(l_val), float(r_val)
-    print(l_val, r_val)
+    ##print(l_val, r_val)
     
-    if stop or turn
+    ##if stop or turn
     # if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
         # flag_pid = False
         # mbot.value = (l_val, r_val)
         
     
-    if forward
+    ##if forward
     # elif (l_val > 0 and r_val > 0) and not flag_pid:
         # flag_forward = True
         # flag_pid = True
     
-    if backward
+    ##if backward
     # elif (l_val < 0 and r_val < 0) and not flag_pid:
         # flag_forward = False
         # flag_pid = True
