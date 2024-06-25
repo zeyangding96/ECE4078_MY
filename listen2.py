@@ -57,38 +57,38 @@ def capture_image():
     stream.seek(0)
     return Response(stream, mimetype='image/jpeg')
     
-# @app.route('/move')
-# def move():
-    # l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
-    # l_val, r_val = float(l_val), float(r_val)
-    # mbot.value = (l_val, r_val)
-    # return ""
-    
 @app.route('/move')
 def move():
-    global flag_pid
-    
     l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
     l_val, r_val = float(l_val), float(r_val)
-    # print(l_val, r_val)
+    mbot.value = (l_val, r_val)
+    return ""
     
-    # if stop or turn
-    if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
-        flag_pid = False
-        mbot.value = (l_val, r_val)
+# @app.route('/move')
+# def move():
+    # global flag_pid
+    
+    # l_val, r_val = request.args.get('l_val'), request.args.get('r_val')
+    # l_val, r_val = float(l_val), float(r_val)
+    print(l_val, r_val)
+    
+    if stop or turn
+    # if (l_val == 0 and r_val == 0) or (l_val > 0 and r_val < 0) or (l_val < 0 and r_val > 0):
+        # flag_pid = False
+        # mbot.value = (l_val, r_val)
         
     
-    # if forward
-    elif (l_val > 0 and r_val > 0) and not flag_pid:
-        flag_forward = True
-        flag_pid = True
+    if forward
+    # elif (l_val > 0 and r_val > 0) and not flag_pid:
+        # flag_forward = True
+        # flag_pid = True
     
-    # if backward
-    elif (l_val < 0 and r_val < 0) and not flag_pid:
-        flag_forward = False
-        flag_pid = True
+    if backward
+    # elif (l_val < 0 and r_val < 0) and not flag_pid:
+        # flag_forward = False
+        # flag_pid = True
     
-    return ""
+    # return ""
     
 class PID:
     def __init__(self, Kp, Ki, Kd, setpoint=0):
@@ -152,8 +152,8 @@ flask_thread.start()
 
 try:
     while True:
-        move_robot()
-        # time.sleep(2)
+        # move_robot()
+        time.sleep(2)
 except KeyboardInterrupt:
     mbot.stop()
     picam2.stop()
