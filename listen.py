@@ -49,8 +49,8 @@ def move_robot():
             l_vel = 0.9
             pid_right.setpoint = left_count
             r_vel = pid_right(right_count)
-            print(left_count, right_count)
-            print(l_vel, r_vel)
+            # print(left_count, right_count)
+            # print(l_vel, r_vel)
             
             # l_vel = max(min(l_vel, 1), -1)
             # r_vel = max(min(r_vel, 1), -1)
