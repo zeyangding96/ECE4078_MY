@@ -15,7 +15,7 @@ class Encoder(object):
         self._value = 0
         self.encoder = DigitalInputDevice(pin)
         self.encoder.when_activated = self._increment
-        # self.encoder.when_deactivated = self._increment
+        self.encoder.when_deactivated = self._increment
     
     def reset(self):
         self._value = 0
@@ -56,7 +56,7 @@ def move_robot():
                 else: pibot.value = (-l_vel, -r_vel)
                 print('Value', left_encoder.value, right_encoder.value)
                 print('Speed', l_vel, r_vel)
-        time.sleep(0.01)
+        time.sleep(0.005)
     
     
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
