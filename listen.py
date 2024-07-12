@@ -135,7 +135,7 @@ flask_thread.start()
 try:
     while True:
         #move_robot()
-        pibot.value = (0.5,0.5)
+        pibot.value = (0.2,0.2)
 except KeyboardInterrupt:
     pibot.stop()
     picam2.stop()
