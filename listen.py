@@ -30,29 +30,30 @@ class Encoder(object):
 
 # main function to control the robot wheels
 def move_robot():
-    global use_pid, l_vel, r_vel
-    while True:
-        # if not using pid, just move the wheels as commanded
-        if not use_pid:
-            pibot.value = (l_vel, r_vel)          
+    while True: pass
+    # global use_pid, l_vel, r_vel
+    # while True:
+        if not using pid, just move the wheels as commanded
+        # if not use_pid:
+            # pibot.value = (l_vel, r_vel)          
         
-        # with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
-        # pid only runs when robot moves forward or backward. Turning does not use pid
-        else:
-            if (motion == 'stop') or (motion == 'turning'):
-                pibot.value = (l_vel, r_vel) 
-                left_encoder.reset()
-                right_encoder.reset()
-                flag_new_pid_cycle = True          
-            else:
-                if flag_new_pid_cycle:
-                    pid_right = PID(kp, ki, kd, setpoint=left_encoder.value, output_limits=(0,1), starting_output=r_vel)
-                    flag_new_pid_cycle = False
-                pid_right.setpoint = left_encoder.value
-                r_vel = pid_right(right_encoder.value)
-                if motion == 'forward': pibot.value = (l_vel, r_vel)
-                else: pibot.value = (-l_vel, -r_vel)      
-        time.sleep(0.01)
+        with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
+        pid only runs when robot moves forward or backward. Turning does not use pid
+        # else:
+            # if (motion == 'stop') or (motion == 'turning'):
+                # pibot.value = (l_vel, r_vel) 
+                # left_encoder.reset()
+                # right_encoder.reset()
+                # flag_new_pid_cycle = True          
+            # else:
+                # if flag_new_pid_cycle:
+                    # pid_right = PID(kp, ki, kd, setpoint=left_encoder.value, output_limits=(0,1), starting_output=r_vel)
+                    # flag_new_pid_cycle = False
+                # pid_right.setpoint = left_encoder.value
+                # r_vel = pid_right(right_encoder.value)
+                # if motion == 'forward': pibot.value = (l_vel, r_vel)
+                # else: pibot.value = (-l_vel, -r_vel)      
+        # time.sleep(0.01)
     
     
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
@@ -80,6 +81,7 @@ def capture_image():
 def move():
     global l_vel, r_vel, motion
     l_vel, r_vel = float(request.args.get('l_vel')), float(request.args.get('r_vel'))
+    pibot.value = (l_vel, r_vel)
     
     if (l_vel == 0 and r_vel == 0):
         motion = 'stop'
