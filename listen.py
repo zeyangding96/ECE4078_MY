@@ -31,8 +31,7 @@ class Encoder(object):
 
 # main function to control the robot wheels
 def move_robot():
-    print('hi', l_vel)
-    print('lo', r_vel)
+    global use_pid, l_vel, r_vel
     while True:
         print('Value', left_encoder.value, right_encoder.value)
         # if not using pid, just move the wheels as commanded
@@ -140,8 +139,7 @@ use_pid = 0
 kp = 0
 ki = 0
 kd = 0
-l_vel = 0
-r_vel = 0
+l_vel, r_vel = 0, 0
 motion = ''
 
 # Initialize the PiCamera
