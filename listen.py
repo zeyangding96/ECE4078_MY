@@ -88,7 +88,7 @@ def move():
         motion = 'forward'
     elif (l_vel < 0 and r_vel < 0):
         motion = 'backward'
-        
+    print(motion)
     return motion
     
     # if 'time' in request.args:
