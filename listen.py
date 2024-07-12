@@ -33,12 +33,12 @@ def move_robot():
     while True: pass
     # global use_pid, l_vel, r_vel
     # while True:
-        if not using pid, just move the wheels as commanded
+        ###if not using pid, just move the wheels as commanded
         # if not use_pid:
             # pibot.value = (l_vel, r_vel)          
         
-        with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
-        pid only runs when robot moves forward or backward. Turning does not use pid
+        ###with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
+        ###pid only runs when robot moves forward or backward. Turning does not use pid
         # else:
             # if (motion == 'stop') or (motion == 'turning'):
                 # pibot.value = (l_vel, r_vel) 
