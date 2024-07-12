@@ -7,39 +7,6 @@ import time
 import threading
 
 
-# Constants
-in1 = 17
-in2 = 27
-ena = 18
-in3 = 23
-in4 = 24
-enb = 25
-enc_a = 26
-enc_b = 16
-
-# Initialize robot and encoders
-pibot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
-
-# Initialize PID controllers for wheels
-left_encoder = Encoder(enc_a)
-right_encoder = Encoder(enc_b)
-# pid_left = PID(0.001, 0, 0.0005, setpoint=0)
-pid_right = PID(0.001, 0, 0.0005, setpoint=0, output_limits=(0,1), starting_output=0.9)
-use_pid = 0
-kp, ki, kd = 0, 0, 0
-flag_forward = 1
-
-# Initialize the PiCamera
-picam2 = Picamera2()
-config = picam2.create_preview_configuration(lores={"size": (640,480)})
-picam2.configure(config)
-picam2.start()
-time.sleep(2)
-
-# Initialize flask
-app = Flask(__name__)
-
-
 class Encoder(object):
     def __init__(self, pin):
         self._value = 0
@@ -59,6 +26,46 @@ class Encoder(object):
         return self._value
         
 
+# main function to control the robot wheels
+def move_robot():
+    
+    global left_count, right_count, use_pid, flag_forward
+    
+    # pid_left.setpoint = 9999
+    # pid_right.setpoint = 9999
+    
+    while True:
+    
+        # reset pid controller (when robot stops or turn)
+        if not use_pid:
+            left_count = 0
+            right_count = 0
+            
+        else:       
+            # l_vel = pid_left(left_count)
+            l_vel = 0.9
+            pid_right.setpoint = left_count
+            r_vel = pid_right(right_count)
+            print(left_count, right_count)
+            print(l_vel, r_vel)
+            
+            # l_vel = max(min(l_vel, 1), -1)
+            # r_vel = max(min(r_vel, 1), -1)
+            
+        
+            if flag_forward:
+                pibot.value = (l_vel, r_vel)
+            else:
+                pibot.value = (-l_vel, -r_vel)
+        
+        time.sleep(0.005)
+
+
+# Run Flask in a separate thread
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
+    
+    
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
 @app.route('/pid')
 def set_pid():
@@ -110,45 +117,38 @@ def move():
     
     return ""
 
-# main function to control the robot wheels
-def move_robot():
-    
-    global left_count, right_count, use_pid, flag_forward
-    
-    # pid_left.setpoint = 9999
-    # pid_right.setpoint = 9999
-    
-    while True:
-    
-        # reset pid controller (when robot stops or turn)
-        if not use_pid:
-            left_count = 0
-            right_count = 0
-            
-        else:
-        
-            # l_vel = pid_left(left_count)
-            l_vel = 0.9
-            pid_right.setpoint = left_count
-            r_vel = pid_right(right_count)
-            print(left_count, right_count)
-            print(l_vel, r_vel)
-            
-            # l_vel = max(min(l_vel, 1), -1)
-            # r_vel = max(min(r_vel, 1), -1)
-            
-        
-            if flag_forward:
-                pibot.value = (l_vel, r_vel)
-            else:
-                pibot.value = (-l_vel, -r_vel)
-        
-        time.sleep(0.005)
 
+# Constants
+in1 = 17
+in2 = 27
+ena = 18
+in3 = 23
+in4 = 24
+enb = 25
+enc_a = 26
+enc_b = 16
 
-# Run Flask in a separate thread
-def run_flask():
-    app.run(host='0.0.0.0', port=5000)
+# Initialize robot and encoders
+pibot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(forward=in3, backward=in4, enable=enb))
+
+# Initialize PID controllers for wheels
+left_encoder = Encoder(enc_a)
+right_encoder = Encoder(enc_b)
+# pid_left = PID(0.001, 0, 0.0005, setpoint=0)
+pid_right = PID(0.001, 0, 0.0005, setpoint=0, output_limits=(0,1), starting_output=0.9)
+use_pid = 0
+kp, ki, kd = 0, 0, 0
+flag_forward = 1
+
+# Initialize the PiCamera
+picam2 = Picamera2()
+config = picam2.create_preview_configuration(lores={"size": (640,480)})
+picam2.configure(config)
+picam2.start()
+time.sleep(2)
+
+# Initialize flask
+app = Flask(__name__)
 
 flask_thread = threading.Thread(target=run_flask)
 flask_thread.daemon = True
