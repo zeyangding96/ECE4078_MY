@@ -7,6 +7,9 @@ import time
 import threading
 
 
+app = Flask(__name__)
+
+
 class Encoder(object):
     def __init__(self, pin):
         self._value = 0
@@ -148,8 +151,6 @@ picam2.start()
 time.sleep(2)
 
 # Initialize flask
-app = Flask(__name__)
-
 flask_thread = threading.Thread(target=run_flask)
 flask_thread.daemon = True
 flask_thread.start()
