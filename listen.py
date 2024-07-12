@@ -22,7 +22,6 @@ class Encoder(object):
     
     def _increment(self):
         self._value += 1
-        #print(self._value)
         
     @property
     def value(self):
@@ -33,7 +32,6 @@ class Encoder(object):
 def move_robot():
     global use_pid, l_vel, r_vel
     while True:
-        print('Value', left_encoder.value, right_encoder.value)
         # if not using pid, just move the wheels as commanded
         if not use_pid:
             pibot.value = (l_vel, r_vel)          
@@ -94,29 +92,6 @@ def move():
     return motion
     
     # if 'time' in request.args:
-    
-    # if use_pid:
-     
-        ##stop or turn
-        # if (l_vel == 0 and r_vel == 0) or (l_vel != r_vel ):
-            # use_pid = False
-            # pibot.value = (l_vel, r_vel)
-                    
-        ##forward
-        # elif (l_vel > 0 and r_vel > 0) and not use_pid:
-            # flag_forward = True
-            # use_pid = True
-        
-        ##backward
-        # elif (l_vel < 0 and r_vel < 0) and not use_pid:
-            # flag_forward = False
-            # use_pid = True
-    
-    ##Not using pid
-    # else:
-        # pibot.value = (l_vel, r_vel)
-    
-    # return ""
 
 
 # Constants
