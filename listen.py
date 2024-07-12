@@ -32,36 +32,28 @@ class Encoder(object):
 # main function to control the robot wheels
 def move_robot():
     
-    global left_count, right_count, use_pid, flag_forward
-    
-    # pid_left.setpoint = 9999
-    # pid_right.setpoint = 9999
-    
     while True:
-    
-        # reset pid controller (when robot stops or turn)
+        print('Value', left_encoder.value, right_encoder.value)
+        # if not using pid, just move the wheels as commanded
         if not use_pid:
-            left_count = 0
-            right_count = 0
-            
-        else:       
-            # l_vel = pid_left(left_count)
-            l_vel = 0.9
-            pid_right.setpoint = left_count
-            r_vel = pid_right(right_count)
-            # print(left_count, right_count)
-            # print(l_vel, r_vel)
-            
-            # l_vel = max(min(l_vel, 1), -1)
-            # r_vel = max(min(r_vel, 1), -1)
-            
+            pibot.value = (l_vel, r_vel)          
         
-            if flag_forward:
-                pibot.value = (l_vel, r_vel)
+        # with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
+        # pid only runs when robot moves forward or backward. Turning does not use pid
+        else:
+            if (motion == 'stop') or (motion == 'turning'):
+                left_encoder.reset()
+                right_encoder.reset()
+                flag_new_pid_cycle = True          
             else:
-                pibot.value = (-l_vel, -r_vel)
-        
-        time.sleep(0.005)
+                if flag_new_pid_cycle:
+                    pid_right = PID(kp, ki, kd, setpoint=left_encoder.value, output_limits=(0,1), starting_output=r_vel)
+                    flag_new_pid_cycle = False
+                pid_right.setpoint = left_encoder.value
+                r_vel = pid_right(right_encoder.value)
+                if motion == 'forward': pibot.value = (l_vel, r_vel)
+                else: pibot.value = (-l_vel, -r_vel)      
+        time.sleep(0.01)
     
     
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
@@ -71,10 +63,8 @@ def set_pid():
     use_pid = int(request.args.get('use_pid'))
     if use_pid:
         kp, ki, kd = float(request.args.get('kp')), float(request.args.get('ki')), float(request.args.get('kd'))
-        print("Using PID")
         return "Using PID"
     else:
-        print("Not using PID")
         return "Not using PID"
     
 # Receive a request to capture and send a snapshot of the picamera
@@ -89,33 +79,44 @@ def capture_image():
  # Receive command to move the pibot
 @app.route('/move')
 def move():
-    
+    global l_vel, r_vel, motion
     l_vel, r_vel = float(request.args.get('l_vel')), float(request.args.get('r_vel'))
+    
+    if (l_vel == 0 and r_vel == 0):
+        motion = 'stop'
+    elif (l_vel != r_vel ):
+        motion = 'turning'
+    elif (l_vel > 0 and r_vel > 0):
+        motion = 'forward'
+    elif (l_vel < 0 and r_vel < 0):
+        motion = 'backward'
+        
+    return motion
     
     # if 'time' in request.args:
     
-    if use_pid:
+    # if use_pid:
      
-        # stop or turn
-        if (l_vel == 0 and r_vel == 0) or (l_vel != r_vel ):
-            use_pid = False
-            pibot.value = (l_vel, r_vel)
+        ##stop or turn
+        # if (l_vel == 0 and r_vel == 0) or (l_vel != r_vel ):
+            # use_pid = False
+            # pibot.value = (l_vel, r_vel)
                     
-        # forward
-        elif (l_vel > 0 and r_vel > 0) and not use_pid:
-            flag_forward = True
-            use_pid = True
+        ##forward
+        # elif (l_vel > 0 and r_vel > 0) and not use_pid:
+            # flag_forward = True
+            # use_pid = True
         
-        # backward
-        elif (l_vel < 0 and r_vel < 0) and not use_pid:
-            flag_forward = False
-            use_pid = True
+        ##backward
+        # elif (l_vel < 0 and r_vel < 0) and not use_pid:
+            # flag_forward = False
+            # use_pid = True
     
-    # Not using pid
-    else:
-        pibot.value = (l_vel, r_vel)
+    ##Not using pid
+    # else:
+        # pibot.value = (l_vel, r_vel)
     
-    return ""
+    # return ""
 
 
 # Constants
@@ -134,11 +135,10 @@ pibot = Robot(right=Motor(forward=in1, backward=in2, enable=ena), left=Motor(for
 # Initialize PID controllers for wheels
 left_encoder = Encoder(enc_a)
 right_encoder = Encoder(enc_b)
-# pid_left = PID(0.001, 0, 0.0005, setpoint=0)
-pid_right = PID(0.001, 0, 0.0005, setpoint=0, output_limits=(0,1), starting_output=0.9)
 use_pid = 0
 kp, ki, kd = 0, 0, 0
-flag_forward = 1
+l_vel, r_vel = 0, 0
+motion = ''
 
 # Initialize the PiCamera
 picam2 = Picamera2()
@@ -157,7 +157,6 @@ flask_thread.start()
 try:
     while True:
         move_robot()
-        # time.sleep(2)
 except KeyboardInterrupt:
     pibot.stop()
     picam2.stop()
