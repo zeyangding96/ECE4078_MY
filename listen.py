@@ -62,11 +62,6 @@ def move_robot():
                 pibot.value = (-l_vel, -r_vel)
         
         time.sleep(0.005)
-
-
-# Run Flask in a separate thread
-def run_flask():
-    app.run(host='0.0.0.0', port=5000)
     
     
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
@@ -151,6 +146,8 @@ picam2.start()
 time.sleep(2)
 
 # Initialize flask
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
 flask_thread = threading.Thread(target=run_flask)
 flask_thread.daemon = True
 flask_thread.start()
