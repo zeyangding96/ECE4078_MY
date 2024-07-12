@@ -68,9 +68,7 @@ def move_robot():
 @app.route('/pid')
 def set_pid():
     global use_pid, kp, ki, kd
-    use_pid = bool(request.args.get('use_pid'))
-    print(use_pid)
-    print(type(use_pid))
+    use_pid = int(request.args.get('use_pid'))
     if use_pid:
         kp, ki, kd = float(request.args.get('kp')), float(request.args.get('ki')), float(request.args.get('kd'))
         print("Using PID")
