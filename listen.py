@@ -31,6 +31,7 @@ class Encoder(object):
 # main function to control the robot wheels
 def move_robot():
     global use_pid, l_vel, r_vel
+    flag_new_pid_cycle = True
     while True:
         ### if not using pid, just move the wheels as commanded
         if not use_pid:
