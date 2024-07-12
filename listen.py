@@ -81,7 +81,6 @@ def capture_image():
 def move():
     global l_vel, r_vel, motion
     l_vel, r_vel = float(request.args.get('l_vel')), float(request.args.get('r_vel'))
-    pibot.value = (l_vel, r_vel)
     
     if (l_vel == 0 and r_vel == 0):
         motion = 'stop'
@@ -135,7 +134,8 @@ flask_thread.start()
 
 try:
     while True:
-        move_robot()
+        #move_robot()
+        pibot.value = (0.5,0.5)
 except KeyboardInterrupt:
     pibot.stop()
     picam2.stop()
