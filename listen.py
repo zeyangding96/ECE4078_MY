@@ -96,8 +96,8 @@ def move():
 
 
 # Constants
-in1 = 17
-in2 = 27
+in1 = 27
+in2 = 17
 ena = 18
 in3 = 23
 in4 = 24
@@ -135,7 +135,7 @@ flask_thread.start()
 try:
     while True:
         #move_robot()
-        pibot.value = (0.2,0.2)
+        pibot.value = (0.5,0.5)
 except KeyboardInterrupt:
     pibot.stop()
     picam2.stop()
