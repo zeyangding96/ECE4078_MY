@@ -61,6 +61,7 @@ class Encoder(object):
 
 # Receive confirmation whether to use pid or not to control the wheels (forward & backward)
 @app.route('/pid')
+def set_pid():
     global use_pid, kp, ki, kd
     use_pid = bool(request.args.get('use_pid'))
     if use_pid:
