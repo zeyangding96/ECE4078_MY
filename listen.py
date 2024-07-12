@@ -71,8 +71,10 @@ def set_pid():
     use_pid = bool(request.args.get('use_pid'))
     if use_pid:
         kp, ki, kd = float(request.args.get('kp')), float(request.args.get('ki')), float(request.args.get('kd'))
+        print("Using PID")
         return "Using PID"
     else:
+        print("Not using PID")
         return "Not using PID"
     
 # Receive a request to capture and send a snapshot of the picamera
