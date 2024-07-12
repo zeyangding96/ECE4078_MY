@@ -31,7 +31,8 @@ class Encoder(object):
 
 # main function to control the robot wheels
 def move_robot():
-    
+    print('hi', l_vel)
+    print('lo', r_vel)
     while True:
         print('Value', left_encoder.value, right_encoder.value)
         # if not using pid, just move the wheels as commanded
