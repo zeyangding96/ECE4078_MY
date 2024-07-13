@@ -30,32 +30,32 @@ class Encoder(object):
 
 # main function to control the robot wheels
 def move_robot():
-    global use_pid, l_vel, r_vel
+    global use_pid, left_speed, right_speed
     flag_new_pid_cycle = True
     while True:
         ### if not using pid, just move the wheels as commanded
         if not use_pid:
-            pibot.value = (l_vel, r_vel)          
+            pibot.value = (left_speed, right_speed)          
         
         ### with pid, left wheel is set as reference, and right wheel will try to match the encoder counter of left wheel
         ### pid only runs when robot moves forward or backward. Turning does not use pid
         else:
             if (motion == 'stop') or (motion == 'turning'):
-                pibot.value = (l_vel, r_vel) 
+                pibot.value = (left_speed, right_speed) 
                 left_encoder.reset()
                 right_encoder.reset()
                 flag_new_pid_cycle = True          
             else:
-                l_vel, r_vel = abs(l_vel), abs(r_vel)
+                left_speed, right_speed = abs(left_speed), abs(right_speed)
                 if flag_new_pid_cycle:
-                    pid_right = PID(kp, ki, kd, setpoint=left_encoder.value, output_limits=(0,1), starting_output=r_vel)
+                    pid_right = PID(kp, ki, kd, setpoint=left_encoder.value, output_limits=(0,1), starting_output=right_speed)
                     flag_new_pid_cycle = False
                 pid_right.setpoint = left_encoder.value
-                r_vel = pid_right(right_encoder.value)
-                if motion == 'forward': pibot.value = (l_vel, r_vel)
-                else: pibot.value = (-l_vel, -r_vel)
+                right_speed = pid_right(right_encoder.value)
+                if motion == 'forward': pibot.value = (left_speed, right_speed)
+                else: pibot.value = (-left_speed, -right_speed)
                 # print('Value', left_encoder.value, right_encoder.value)
-                # print('Speed', l_vel, r_vel)
+                # print('Speed', left_speed, right_speed)
         time.sleep(0.005)
     
     
@@ -82,16 +82,16 @@ def capture_image():
  # Receive command to move the pibot
 @app.route('/move')
 def move():
-    global l_vel, r_vel, motion
-    l_vel, r_vel = float(request.args.get('l_vel')), float(request.args.get('r_vel'))
+    global left_speed, right_speed, motion
+    left_speed, right_speed = float(request.args.get('left_speed')), float(request.args.get('right_speed'))
     
-    if (l_vel == 0 and r_vel == 0):
+    if (left_speed == 0 and right_speed == 0):
         motion = 'stop'
-    elif (l_vel != r_vel ):
+    elif (left_speed != right_speed ):
         motion = 'turning'
-    elif (l_vel > 0 and r_vel > 0):
+    elif (left_speed > 0 and right_speed > 0):
         motion = 'forward'
-    elif (l_vel < 0 and r_vel < 0):
+    elif (left_speed < 0 and right_speed < 0):
         motion = 'backward'
     return motion
     
@@ -118,7 +118,7 @@ use_pid = 0
 kp = 0
 ki = 0
 kd = 0
-l_vel, r_vel = 0, 0
+left_speed, right_speed = 0, 0
 motion = ''
 
 # Initialize the PiCamera
