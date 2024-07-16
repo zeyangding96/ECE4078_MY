@@ -99,8 +99,8 @@ def move():
 
 
 # Constants
-in1 = 27 # may have to change this
-in2 = 17 # may have to change this
+in1 = 17 # may have to change this
+in2 = 27 # may have to change this
 ena = 18
 in3 = 23 # may have to change this
 in4 = 24 # may have to change this
