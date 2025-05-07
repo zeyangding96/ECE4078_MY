@@ -257,19 +257,19 @@ def wheel_server():
     
     while running:
         try:
-            client_socket, addr = server_socket.accept()
-            print(f"Wheel client connected: {addr}")
+            client_socket, _ = server_socket.accept()
+            print(f"Wheel client connected")
             
             while running:
                 try:
                     # Receive speed (4 bytes for each value)
                     data = client_socket.recv(8)
                     if not data or len(data) != 8:
-                        print("Wheel client disconnected")
+                        print("Wheel client sending speed error")
                         break
                     
                     # Unpack speed values and convert to PWM
-                    left_speed, right_speed = struct.unpack("!ii", data)
+                    left_speed, right_speed = struct.unpack("!ff", data)
                     print(f"Received wheel: left_speed={left_speed}, right_speed={right_speed}")
                     left_pwm, right_pwm = left_speed*100, right_speed*100
                     
@@ -278,7 +278,7 @@ def wheel_server():
                     client_socket.sendall(response)
                     
                 except Exception as e:
-                    print(f"Wheel socket error: {str(e)}")
+                    print(f"Wheel client disconnected")
                     break
                     
         except Exception as e:
@@ -309,7 +309,7 @@ def main():
         pid_config_thread.daemon = True
         pid_config_thread.start()
         
-        # Start command server (main thread)
+        # Start wheel server (main thread)
         wheel_server()
         
     except KeyboardInterrupt:
