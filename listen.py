@@ -29,7 +29,7 @@ use_PID = 0
 KP = 0.5
 KI = 0.1
 KD = 0.01
-MAX_CORRECTION = 100  # Maximum PWM correction value
+MAX_CORRECTION = 20  # Maximum PWM correction value
 
 # Global variables
 running = True
@@ -111,38 +111,40 @@ def pid_control():
         dt = current_time - last_time
         last_time = current_time
         
-        # If both motors are supposed to move forward or backward (not turning)
-        if use_PID and ( (left_pwm > 0 and right_pwm > 0) or (left_pwm < 0 and right_pwm < 0) ):
-            # Calculate error (difference between encoder counts)
-            error = left_count - right_count
-            
-            # Calculate PID terms
-            proportional = KP * error
-            integral += KI * error * dt
-            integral = max(-MAX_CORRECTION, min(integral, MAX_CORRECTION))  # Anti-windup
-            derivative = KD * (error - last_error) / dt if dt > 0 else 0
-            
-            # Calculate correction
-            correction = proportional + integral + derivative
-            correction = max(-MAX_CORRECTION, min(correction, MAX_CORRECTION))
-                        
-            # Apply correction
-            print('correct', correction)
-            actual_left = left_pwm - correction
-            actual_right = right_pwm + correction
-            print('actual', actual_left, actual_right)
-                
-            # Apply the corrected values
-            set_motors(actual_left, actual_right)
-            
-            # Store current error for next iteration
-            last_error = error
-        else:
-            # Reset integral when stopped or turning
-            integral = 0
-            last_error = 0
-            reset_encoder()
+        if not use_PID:
             set_motors(left_pwm, right_pwm)
+        else:
+            if (left_pwm > 0 and right_pwm > 0) or (left_pwm < 0 and right_pwm < 0):
+                # Calculate error (difference between encoder counts)
+                error = left_count - right_count
+                
+                # Calculate PID terms
+                proportional = KP * error
+                integral += KI * error * dt
+                integral = max(-MAX_CORRECTION, min(integral, MAX_CORRECTION))  # Anti-windup
+                derivative = KD * (error - last_error) / dt if dt > 0 else 0
+                
+                # Calculate correction
+                correction = proportional + integral + derivative
+                correction = max(-MAX_CORRECTION, min(correction, MAX_CORRECTION))
+                            
+                # Apply correction
+                print('correct', correction)
+                actual_left = left_pwm - correction
+                actual_right = right_pwm + correction
+                print('actual', actual_left, actual_right)
+                    
+                # Apply the corrected values
+                set_motors(actual_left, actual_right)
+                
+                # Store current error for next iteration
+                last_error = error
+            else:
+                # Reset integral when stopped or turning
+                integral = 0
+                last_error = 0
+                reset_encoder()
+                set_motors(left_pwm, right_pwm)
         
         # Use a smaller delay to make PID more responsive
         time.sleep(0.01)
