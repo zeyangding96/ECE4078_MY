@@ -52,6 +52,10 @@ def setup_gpio():
     GPIO.setup(RIGHT_MOTOR_IN3, GPIO.OUT)
     GPIO.setup(RIGHT_MOTOR_IN4, GPIO.OUT)
     
+    # This prevents slight motor jerk when connection is established
+    GPIO.output(LEFT_MOTOR_ENA, GPIO.LOW)
+    GPIO.output(RIGHT_MOTOR_ENB, GPIO.LOW)
+    
     # Encoder
     GPIO.setup(LEFT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(RIGHT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
