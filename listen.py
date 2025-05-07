@@ -125,14 +125,11 @@ def pid_control():
             # Calculate correction
             correction = proportional + integral + derivative
             correction = max(-MAX_CORRECTION, min(correction, MAX_CORRECTION))
-            
-            # Apply correction to motor speeds
-            target_left = left_pwm
-            target_right = right_pwm
-            
+                        
             # Apply correction
-            actual_left = target_left - correction
-            actual_right = target_right + correction
+            print('correct', correction)
+            actual_left = left_pwm - correction
+            actual_right = right_pwm + correction
                 
             # Apply the corrected values
             set_motors(actual_left, actual_right)
