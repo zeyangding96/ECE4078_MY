@@ -170,11 +170,15 @@ def stream_camera():
             
             while running:
                 # Capture frame and convert to bytes
-                frame = picam2.capture_array()
-                frame_data = frame.tobytes()
+                stream = io.BytesIO()
+                picam2.capture_file(stream, format='jpeg')
+                stream.seek(0)
+                jpeg_data = stream.getvalue()
+                jpeg_size = len(jpeg_data)
                 
                 try:
-                    client_socket.sendall(frame_data)
+                    client_socket.sendall(struct.pack("!I", jpeg_size))
+                    client_socket.sendall(jpeg_data)
                 except:
                     print("Camera client disconnected")
                     break
