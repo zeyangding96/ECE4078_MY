@@ -144,8 +144,8 @@ def pid_control():
                     flag_new_pid_cycle = False
                 pid_right.setpoint = left_count
                 right = pid_right(left_count)*100
-                if (left_pwm > 0 and right_pwm > 0): pibot.value = (left, right)
-                else: pibot.value = (-left, -right)
+                if (left_pwm > 0 and right_pwm > 0): set_motors(left, right)
+                else: set_motors(-left, -right)
                 
             else:
                 # Reset integral when stopped or turning
