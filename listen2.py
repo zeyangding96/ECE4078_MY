@@ -14,17 +14,15 @@ WHEEL_PORT = 8000
 CAMERA_PORT = 8001
 PID_CONFIG_PORT = 8002
 
-# Motor Control Pins
+# Pins
 LEFT_MOTOR_ENA = 18
 LEFT_MOTOR_IN1 = 17
 LEFT_MOTOR_IN2 = 27
 RIGHT_MOTOR_ENB = 25
 RIGHT_MOTOR_IN3 = 23
 RIGHT_MOTOR_IN4 = 24
-
-# Encoder Pins
-LEFT_ENCODER = 5
-RIGHT_ENCODER = 6
+LEFT_ENCODER = 26
+RIGHT_ENCODER = 16
 
 # PID Constants (default values, will be overridden by client)
 use_PID = 0
@@ -60,7 +58,7 @@ def setup_gpio():
     GPIO.setup(LEFT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(RIGHT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     
-    # Encoder interrupt (when activated)
+    # Encoder interrupt (both activated and deactivated)
     GPIO.add_event_detect(LEFT_ENCODER, GPIO.BOTH, callback=left_encoder_callback)
     GPIO.add_event_detect(RIGHT_ENCODER, GPIO.BOTH, callback=right_encoder_callback)
     
@@ -73,15 +71,11 @@ def setup_gpio():
 
 def left_encoder_callback(channel):
     global left_count
-    with threading.Lock():
-        left_count += 1
-    print('left', left_count)
+    left_count += 1
 
 def right_encoder_callback(channel):
     global right_count
-    with threading.Lock():
-        right_count += 1
-    print('right', right_count)
+    right_count += 1
 
 def set_motors(left, right):
     if left >= 0:
@@ -274,7 +268,7 @@ def wheel_server():
                     
                     # Unpack speed values and convert to PWM
                     left_speed, right_speed = struct.unpack("!ff", data)
-                    print(f"Received wheel: left_speed={left_speed}, right_speed={right_speed}")
+                    print(f"Received wheel: left_speed={left_speed:.4f}, right_speed={right_speed:.4f}")
                     left_pwm, right_pwm = left_speed*100, right_speed*100
                     
                     # Send encoder counts back
