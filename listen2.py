@@ -10,9 +10,9 @@ from libcamera import Transform
 
 # Network Configuration
 HOST = '0.0.0.0'  # Listen on all interfaces
-PORT = 8000       # Main Command port
-IMAGE_PORT = 8001 # Camera stream port
-PID_CONFIG_PORT = 8002   # PID configuration port
+WHEEL_PORT = 8000
+CAMERA_PORT = 8001
+PID_CONFIG_PORT = 8002
 
 # Motor Control Pins
 LEFT_MOTOR_ENA = 18
@@ -27,7 +27,7 @@ LEFT_ENCODER = 5
 RIGHT_ENCODER = 6
 
 # PID Constants (default values, will be overridden by client)
-use_PID = False
+use_PID = 0
 KP = 0.5
 KI = 0.1
 KD = 0.01
@@ -149,7 +149,7 @@ def pid_control():
         time.sleep(0.01)
 
 
-def stream_camera():
+def camera_stream_server():
     # Initialize camera
     picam2 = Picamera2()
     camera_config = picam2.create_preview_configuration(lores={"size": (640,480)})
@@ -159,15 +159,15 @@ def stream_camera():
     # Create socket for streaming
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind((HOST, IMAGE_PORT))
+    server_socket.bind((HOST, CAMERA_PORT))
     server_socket.listen(1)
     
-    print(f"Camera stream server started on port {IMAGE_PORT}")
+    print(f"Camera stream server started on port {CAMERA_PORT}")
     
     while running:
         try:
-            client_socket, addr = server_socket.accept()
-            print(f"Camera client connected: {addr}")
+            client_socket, _ = server_socket.accept()
+            print(f"Camera stream client connected")
             
             while running:
                 # Capture frame and convert to bytes
@@ -181,14 +181,14 @@ def stream_camera():
                     client_socket.sendall(struct.pack("!I", jpeg_size))
                     client_socket.sendall(jpeg_data)
                 except:
-                    print("Camera client disconnected")
+                    print("Camera stream client disconnected")
                     break
                 
                 # Small delay to avoid hogging CPU
                 time.sleep(0.01)
                 
         except Exception as e:
-            print(f"Camera server error: {str(e)}")
+            print(f"Camera stream server error: {str(e)}")
         
         if 'client_socket' in locals() and client_socket:
             client_socket.close()
@@ -210,17 +210,16 @@ def pid_config_server():
     
     while running:
         try:
-            client_socket, addr = server_socket.accept()
-            print(f"PID config client connected: {addr}")
+            client_socket, _ = server_socket.accept()
+            print(f"PID config client connected")
             
             try:
                 # Receive PID constants (4 floats)
                 data = client_socket.recv(16)
                 if data and len(data) == 16:
-                    # Unpack PID values
                     use_PID, KP, KI, KD = struct.unpack("!ffff", data)
-                    if use_PID: print("The robot is not using PID.")
-                    else: print(f"Updated PID constants: KP={KP}, KI={KI}, KD={KD}")
+                    if use_PID: print(f"Updated PID constants: KP={KP}, KI={KI}, KD={KD}")
+                    else: print("The robot is not using PID.")
                     
                     # Send acknowledgment (1 for success)
                     response = struct.pack("!i", 1)
@@ -231,7 +230,7 @@ def pid_config_server():
                 client_socket.sendall(response)
                     
             except Exception as e:
-                print(f"PID config error: {str(e)}")
+                print(f"PID config socket error: {str(e)}")
                 try:
                     response = struct.pack("!i", 0)
                     client_socket.sendall(response)
@@ -246,32 +245,32 @@ def pid_config_server():
     server_socket.close()
     
 
-def command_server():
+def wheel_server():
     global left_pwm, right_pwm, running, left_count, right_count
     
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind((HOST, PORT))
+    server_socket.bind((HOST, WHEEL_PORT))
     server_socket.listen(1)
     
-    print(f"Command server started on port {PORT}")
+    print(f"Wheel server started on port {WHEEL_PORT}")
     
     while running:
         try:
             client_socket, addr = server_socket.accept()
-            print(f"Command client connected: {addr}")
+            print(f"Wheel client connected: {addr}")
             
             while running:
                 try:
-                    # Receive command (4 bytes for each PWM value)
+                    # Receive speed (4 bytes for each value)
                     data = client_socket.recv(8)
                     if not data or len(data) != 8:
-                        print("Command client disconnected")
+                        print("Wheel client disconnected")
                         break
                     
                     # Unpack speed values and convert to PWM
                     left_speed, right_speed = struct.unpack("!ii", data)
-                    print(f"Received command: left_speed={left_speed}, right_speed={right_speed}")
+                    print(f"Received wheel: left_speed={left_speed}, right_speed={right_speed}")
                     left_pwm, right_pwm = left_speed*100, right_speed*100
                     
                     # Send encoder counts back
@@ -279,11 +278,11 @@ def command_server():
                     client_socket.sendall(response)
                     
                 except Exception as e:
-                    print(f"Command error: {str(e)}")
+                    print(f"Wheel socket error: {str(e)}")
                     break
                     
         except Exception as e:
-            print(f"Command server error: {str(e)}")
+            print(f"Wheel server error: {str(e)}")
         
         if 'client_socket' in locals() and client_socket:
             client_socket.close()
@@ -301,7 +300,7 @@ def main():
         pid_thread.start()
         
         # Start camera streaming thread
-        camera_thread = threading.Thread(target=stream_camera)
+        camera_thread = threading.Thread(target=camera_stream_server)
         camera_thread.daemon = True
         camera_thread.start()
         
@@ -311,7 +310,7 @@ def main():
         pid_config_thread.start()
         
         # Start command server (main thread)
-        command_server()
+        wheel_server()
         
     except KeyboardInterrupt:
         print("Stopping...")
