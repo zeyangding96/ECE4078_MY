@@ -29,7 +29,7 @@ use_PID = 0
 KP = 0.5
 KI = 0.1
 KD = 0.01
-MAX_CORRECTION = 20  # Maximum PWM correction value
+MAX_CORRECTION = 100  # Maximum PWM correction value
 
 # Global variables
 running = True
@@ -99,7 +99,7 @@ def set_motors(left, right):
 
 def pid_control():
     # Only applies for forward/backward, not turning
-    global left_pwm, right_pwm, left_count, right_count, KP, KI, KD
+    global left_pwm, right_pwm, left_count, right_count, use_PID, KP, KI, KD
     
     integral = 0
     last_error = 0
@@ -112,7 +112,7 @@ def pid_control():
         last_time = current_time
         
         # If both motors are supposed to move forward or backward (not turning)
-        if (left_pwm > 0 and right_pwm > 0) or (left_pwm < 0 and right_pwm < 0):
+        if use_PID and ( (left_pwm > 0 and right_pwm > 0) or (left_pwm < 0 and right_pwm < 0) ):
             # Calculate error (difference between encoder counts)
             error = left_count - right_count
             
