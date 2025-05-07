@@ -148,10 +148,8 @@ def pid_control():
 def stream_camera():
     # Initialize camera
     picam2 = Picamera2()
-    camera_config = picam2.create_video_configuration(
-        main={"size": (640, 480), "format": "RGB888"},
-        transform=Transform(hflip=True, vflip=True)
-    )
+    #camera_config = picam2.create_video_configuration(main={"size": (640, 480), "format": "RGB888"}, transform=Transform(hflip=True))
+    camera_config = picam2.create_preview_configuration(lores={"size": (640,480)})
     picam2.configure(camera_config)
     picam2.start()
     
