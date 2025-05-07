@@ -150,6 +150,7 @@ def stream_camera():
     picam2 = Picamera2()
     #camera_config = picam2.create_video_configuration(main={"size": (640, 480), "format": "RGB888"}, transform=Transform(hflip=True))
     camera_config = picam2.create_preview_configuration(lores={"size": (640,480)})
+    print(camera_config["controls"]["FrameRate"])
     picam2.configure(camera_config)
     picam2.start()
     
