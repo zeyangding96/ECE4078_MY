@@ -130,7 +130,7 @@ def pid_control():
             print('correct', correction)
             actual_left = left_pwm - correction
             actual_right = right_pwm + correction
-            print('actual', actual_left, actual_right
+            print('actual', actual_left, actual_right)
                 
             # Apply the corrected values
             set_motors(actual_left, actual_right)
