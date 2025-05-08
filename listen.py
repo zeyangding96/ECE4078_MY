@@ -144,7 +144,8 @@ def pid_control():
                     flag_new_pid_cycle = False
                 pid_right.setpoint = left_count
                 right = pid_right(right_count)*100
-                print(left, right)
+                print('count', left_count, right_count)
+                print('speed', left, right)
                 if (left_pwm > 0 and right_pwm > 0): set_motors(left, right)
                 else: set_motors(-left, -right)
                 
