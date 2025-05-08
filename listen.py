@@ -15,12 +15,12 @@ CAMERA_PORT = 8001
 PID_CONFIG_PORT = 8002
 
 # Pins
-LEFT_MOTOR_ENA = 18
-LEFT_MOTOR_IN1 = 17
-LEFT_MOTOR_IN2 = 27
-RIGHT_MOTOR_ENB = 25
-RIGHT_MOTOR_IN3 = 23
-RIGHT_MOTOR_IN4 = 24
+RIGHT_MOTOR_ENA = 18
+RIGHT_MOTOR_IN1 = 17
+RIGHT_MOTOR_IN2 = 27
+LEFT_MOTOR_ENB = 25
+LEFT_MOTOR_IN3 = 23
+LEFT_MOTOR_IN4 = 24
 LEFT_ENCODER = 26
 RIGHT_ENCODER = 16
 
@@ -43,16 +43,16 @@ def setup_gpio():
     GPIO.setwarnings(False)
     
     # Motor
-    GPIO.setup(LEFT_MOTOR_ENA, GPIO.OUT)
-    GPIO.setup(LEFT_MOTOR_IN1, GPIO.OUT)
-    GPIO.setup(LEFT_MOTOR_IN2, GPIO.OUT)
-    GPIO.setup(RIGHT_MOTOR_ENB, GPIO.OUT)
-    GPIO.setup(RIGHT_MOTOR_IN3, GPIO.OUT)
-    GPIO.setup(RIGHT_MOTOR_IN4, GPIO.OUT)
+    GPIO.setup(RIGHT_MOTOR_ENA, GPIO.OUT)
+    GPIO.setup(RIGHT_MOTOR_IN1, GPIO.OUT)
+    GPIO.setup(RIGHT_MOTOR_IN2, GPIO.OUT)
+    GPIO.setup(LEFT_MOTOR_ENB, GPIO.OUT)
+    GPIO.setup(LEFT_MOTOR_IN3, GPIO.OUT)
+    GPIO.setup(LEFT_MOTOR_IN4, GPIO.OUT)
     
     # This prevents slight motor jerk when connection is established
-    GPIO.output(LEFT_MOTOR_ENA, GPIO.LOW)
-    GPIO.output(RIGHT_MOTOR_ENB, GPIO.LOW)
+    GPIO.output(RIGHT_MOTOR_ENA, GPIO.LOW)
+    GPIO.output(LEFT_MOTOR_ENB, GPIO.LOW)
     
     # Encoder setup and interrupt (both activated and deactivated)
     GPIO.setup(LEFT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -62,8 +62,8 @@ def setup_gpio():
     
     # Initialize PWM (frequency: 100Hz)
     global left_motor_pwm, right_motor_pwm
-    left_motor_pwm = GPIO.PWM(LEFT_MOTOR_ENA, 100)
-    right_motor_pwm = GPIO.PWM(RIGHT_MOTOR_ENB, 100)
+    left_motor_pwm = GPIO.PWM(RIGHT_MOTOR_ENA, 100)
+    right_motor_pwm = GPIO.PWM(LEFT_MOTOR_ENB, 100)
     left_motor_pwm.start(0)
     right_motor_pwm.start(0)
 
@@ -81,18 +81,18 @@ def reset_encoder():
 
 def set_motors(left, right):
     if left >= 0:
-        GPIO.output(LEFT_MOTOR_IN1, GPIO.HIGH)
-        GPIO.output(LEFT_MOTOR_IN2, GPIO.LOW)
+        GPIO.output(RIGHT_MOTOR_IN1, GPIO.HIGH)
+        GPIO.output(RIGHT_MOTOR_IN2, GPIO.LOW)
     else:
-        GPIO.output(LEFT_MOTOR_IN1, GPIO.LOW)
-        GPIO.output(LEFT_MOTOR_IN2, GPIO.HIGH)
+        GPIO.output(RIGHT_MOTOR_IN1, GPIO.LOW)
+        GPIO.output(RIGHT_MOTOR_IN2, GPIO.HIGH)
     
     if right >= 0:
-        GPIO.output(RIGHT_MOTOR_IN3, GPIO.HIGH)
-        GPIO.output(RIGHT_MOTOR_IN4, GPIO.LOW)
+        GPIO.output(LEFT_MOTOR_IN3, GPIO.HIGH)
+        GPIO.output(LEFT_MOTOR_IN4, GPIO.LOW)
     else:
-        GPIO.output(RIGHT_MOTOR_IN3, GPIO.LOW)
-        GPIO.output(RIGHT_MOTOR_IN4, GPIO.HIGH)
+        GPIO.output(LEFT_MOTOR_IN3, GPIO.LOW)
+        GPIO.output(LEFT_MOTOR_IN4, GPIO.HIGH)
     
     left_motor_pwm.ChangeDutyCycle(min(abs(left), 100))
     right_motor_pwm.ChangeDutyCycle(min(abs(right), 100))
