@@ -158,7 +158,7 @@ def pid_control():
                 # flag_new_pid_cycle = True
         
         # Use a smaller delay to make PID more responsive
-        time.sleep(0.01)
+        time.sleep(0.005)
 
 
 def camera_stream_server():
