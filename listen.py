@@ -57,13 +57,13 @@ def setup_gpio():
     # Encoder setup and interrupt (both activated and deactivated)
     GPIO.setup(LEFT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(RIGHT_ENCODER, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.add_event_detect(LEFT_ENCODER, GPIO.BOTH, callback=left_encoder_callback)
-    GPIO.add_event_detect(RIGHT_ENCODER, GPIO.BOTH, callback=right_encoder_callback)
+    GPIO.add_event_detect(LEFT_ENCODER, GPIO.FALLING, callback=left_encoder_callback)
+    GPIO.add_event_detect(RIGHT_ENCODER, GPIO.FALLING, callback=right_encoder_callback)
     
     # Initialize PWM (frequency: 100Hz)
     global left_motor_pwm, right_motor_pwm
-    left_motor_pwm = GPIO.PWM(RIGHT_MOTOR_ENA, 100)
-    right_motor_pwm = GPIO.PWM(LEFT_MOTOR_ENB, 100)
+    left_motor_pwm = GPIO.PWM(LEFT_MOTOR_ENB, 100)
+    right_motor_pwm = GPIO.PWM(RIGHT_MOTOR_ENA, 100)
     left_motor_pwm.start(0)
     right_motor_pwm.start(0)
 
@@ -80,14 +80,14 @@ def reset_encoder():
     left_count, right_count = 0, 0
 
 def set_motors(left, right):
-    if left >= 0:
+    if right >= 0:
         GPIO.output(RIGHT_MOTOR_IN1, GPIO.HIGH)
         GPIO.output(RIGHT_MOTOR_IN2, GPIO.LOW)
     else:
         GPIO.output(RIGHT_MOTOR_IN1, GPIO.LOW)
         GPIO.output(RIGHT_MOTOR_IN2, GPIO.HIGH)
     
-    if right >= 0:
+    if left >= 0:
         GPIO.output(LEFT_MOTOR_IN3, GPIO.HIGH)
         GPIO.output(LEFT_MOTOR_IN4, GPIO.LOW)
     else:
