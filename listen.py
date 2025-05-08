@@ -129,6 +129,7 @@ def pid_control():
                 correction = max(-MAX_CORRECTION, min(correction, MAX_CORRECTION))
                             
                 # Apply correction
+                if (left_pwm < 0 and right_pwm < 0): correction = -correction
                 actual_left = left_pwm - correction
                 actual_right = right_pwm + correction
                 print('count', left_count, right_count)
